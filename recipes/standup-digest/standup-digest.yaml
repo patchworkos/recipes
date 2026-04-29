@@ -1,0 +1,84 @@
+name: "@patchworkos/standup-digest"
+version: "1.0.0"
+description: >
+  Weekday 9am standup digest. Pull yesterday's closed Linear issues for the
+  current user and recent messages from the standup Slack channel. Compose
+  a 3-line standup post (yesterday/today/blockers) and send it to the
+  configured channel.
+
+trigger:
+  type: cron
+  schedule: "0 9 * * 1-5"
+
+context:
+  - type: env
+    keys:
+      - SLACK_STANDUP_CHANNEL
+      - LINEAR_TEAM_ID
+      - STANDUP_LOOKBACK_HOURS
+
+steps:
+  - id: fetch_yesterday
+    parallel:
+      - id: linear_closed
+        tool: linear.listIssues
+        params:
+          assignedToMe: true
+          states: ["Done", "Completed"]
+          teamId: "{{LINEAR_TEAM_ID}}"
+          updatedSince: "{{yesterday_start}}"
+        output: closed_issues
+
+      - id: linear_today
+        tool: linear.listIssues
+        params:
+          assignedToMe: true
+          states: ["In Progress", "Todo"]
+          teamId: "{{LINEAR_TEAM_ID}}"
+        output: today_issues
+
+      - id: standup_thread
+        tool: slack.listDMs
+        params:
+          channel: "{{SLACK_STANDUP_CHANNEL}}"
+          limit: 20
+        output: recent_messages
+    risk: low
+
+  - id: compose_standup
+    agent:
+      prompt: |
+        Write a 3-line standup post for the user. No greeting. No filler.
+        Use Slack mrkdwn. Match the tone of recent posts in the channel.
+
+        CLOSED YESTERDAY ({{closed_issues.length}}):
+        {{closed_issues}}
+
+        IN PROGRESS / TODO TODAY:
+        {{today_issues}}
+
+        RECENT CHANNEL MESSAGES (for tone reference):
+        {{recent_messages}}
+
+        Format exactly 3 lines:
+        - *Yesterday:* 1-2 closed issues by title (or "no issues closed")
+        - *Today:* 1-2 in-progress items the user will push on
+        - *Blockers:* one specific blocker if any closed/in-progress issue
+          mentions one, otherwise "none"
+
+        Keep each line under 120 chars. Do not invent blockers.
+    awaits: [fetch_yesterday]
+    output: standup_post
+    risk: low
+
+  - id: post_standup
+    tool: slack.postMessage
+    params:
+      channel: "{{SLACK_STANDUP_CHANNEL}}"
+      text: "{{standup_post}}"
+    awaits: [compose_standup]
+    risk: medium
+
+on_error:
+  notify: false
+  retry: 1

@@ -1,0 +1,31 @@
+{
+  "name": "@patchworkos/friday-recap",
+  "version": "1.0.0",
+  "description": "Friday 4pm weekly recap: closed Linear issues, calendar load, and active Slack threads — composed into a wins/losses summary posted to Slack and optionally appended to a Notion weekly log.",
+  "author": "patchworkos",
+  "license": "MIT",
+  "tags": ["productivity", "weekly", "review"],
+  "connectors": ["linear", "slack", "googleCalendar", "notion"],
+  "recipes": {
+    "main": "friday-recap.yaml"
+  },
+  "variables": {
+    "SLACK_CHANNEL": {
+      "description": "Slack channel or DM to post the weekly recap to",
+      "required": true
+    },
+    "LINEAR_TEAM_ID": {
+      "description": "Linear team ID to scope assigned-issue queries",
+      "required": true
+    },
+    "WEEK_START_ISO": {
+      "description": "ISO timestamp for the start of the recap week (typically Monday 00:00 local)",
+      "required": true
+    },
+    "NOTION_WEEKLY_LOG_DB": {
+      "description": "Notion database ID for the weekly log. Omit to skip the Notion append step.",
+      "required": false
+    }
+  },
+  "homepage": "https://github.com/patchworkos/recipes/tree/main/recipes/friday-recap"
+}

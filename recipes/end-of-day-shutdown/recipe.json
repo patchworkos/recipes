@@ -1,0 +1,23 @@
+{
+  "name": "@patchworkos/end-of-day-shutdown",
+  "version": "1.0.0",
+  "description": "Weekday 6pm shutdown digest: open Linear issues, unread Slack DMs, and tomorrow's calendar — composed into a 4-line Slack message.",
+  "author": "patchworkos",
+  "license": "MIT",
+  "tags": ["productivity", "evening", "daily"],
+  "connectors": ["linear", "slack", "googleCalendar"],
+  "recipes": {
+    "main": "end-of-day-shutdown.yaml"
+  },
+  "variables": {
+    "SLACK_CHANNEL": {
+      "description": "Slack channel ID or DM to post the shutdown summary to",
+      "required": true
+    },
+    "LINEAR_TEAM_ID": {
+      "description": "Linear team ID to scope assigned-issue queries",
+      "required": false
+    }
+  },
+  "homepage": "https://github.com/patchworkos/recipes/tree/main/recipes/end-of-day-shutdown"
+}

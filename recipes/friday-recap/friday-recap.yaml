@@ -1,0 +1,117 @@
+name: "@patchworkos/friday-recap"
+version: "1.0.0"
+description: >
+  Friday 4pm weekly recap. Summarize the week's completed Linear issues,
+  hours blocked in Google Calendar, and active Slack threads. Compose a
+  wins-and-losses recap, post to Slack DM, and append a row to a Notion
+  weekly log if NOTION_WEEKLY_LOG_DB is set.
+
+trigger:
+  type: cron
+  schedule: "0 16 * * 5"
+
+context:
+  - type: env
+    keys:
+      - SLACK_CHANNEL
+      - LINEAR_TEAM_ID
+      - NOTION_WEEKLY_LOG_DB
+      - WEEK_START_ISO
+
+steps:
+  - id: fetch_week
+    parallel:
+      - id: linear_completed
+        tool: linear.listIssues
+        params:
+          assignedToMe: true
+          states: ["Done", "Completed"]
+          teamId: "{{LINEAR_TEAM_ID}}"
+          updatedSince: "{{WEEK_START_ISO}}"
+        output: completed_issues
+
+      - id: linear_carrying_over
+        tool: linear.listIssues
+        params:
+          assignedToMe: true
+          states: ["In Progress", "In Review"]
+          teamId: "{{LINEAR_TEAM_ID}}"
+        output: carrying_over
+
+      - id: calendar_week
+        tool: googleCalendar.listEvents
+        params:
+          timeMin: "{{WEEK_START_ISO}}"
+          timeMax: "{{week_end}}"
+          maxResults: 100
+        output: week_events
+
+      - id: slack_threads
+        tool: slack.listDMs
+        params:
+          limit: 20
+        output: top_threads
+    risk: low
+
+  - id: compose_recap
+    agent:
+      prompt: |
+        Compose a Friday weekly recap. No greeting. No hype. Concrete only.
+
+        COMPLETED LINEAR THIS WEEK ({{completed_issues.length}}):
+        {{completed_issues}}
+
+        CARRYING OVER ({{carrying_over.length}}):
+        {{carrying_over}}
+
+        CALENDAR THIS WEEK:
+        {{week_events}}
+
+        ACTIVE SLACK THREADS:
+        {{top_threads}}
+
+        Return JSON with these keys:
+          slack_message — Slack mrkdwn, max 12 lines, sections:
+            *Wins* (3 bullets max — biggest shipped items by impact)
+            *Losses* (1-3 bullets — things that slipped or got dropped, or
+              "nothing notable" if none)
+            *Time* (one line with rough hours in meetings vs. focus, derived
+              from calendar event durations)
+            *Next week* (1 bullet — top thing to push on, drawn from
+              carrying-over list)
+          notion_title — string, format "Week of <WEEK_START_ISO date>"
+          notion_summary — 2-3 sentence prose summary for the weekly log
+    awaits: [fetch_week]
+    output: recap
+    risk: low
+
+  - id: post_recap_slack
+    tool: slack.postMessage
+    params:
+      channel: "{{SLACK_CHANNEL}}"
+      text: "{{recap.slack_message}}"
+    awaits: [compose_recap]
+    risk: low
+
+  - id: append_to_notion
+    tool: notion.createPage
+    params:
+      database_id: "{{NOTION_WEEKLY_LOG_DB}}"
+      properties:
+        title: "{{recap.notion_title}}"
+        "Week Start": "{{WEEK_START_ISO}}"
+        "Issues Closed": "{{completed_issues.length}}"
+        "Carrying Over": "{{carrying_over.length}}"
+      content: |
+        ## Summary
+        {{recap.notion_summary}}
+
+        ## Slack Recap
+        {{recap.slack_message}}
+    awaits: [compose_recap]
+    optional: true
+    risk: medium
+
+on_error:
+  notify: false
+  retry: 1

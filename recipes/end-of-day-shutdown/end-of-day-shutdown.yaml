@@ -1,0 +1,80 @@
+name: "@patchworkos/end-of-day-shutdown"
+version: "1.0.0"
+description: >
+  Weekday 6pm shutdown digest. Pull in-progress Linear issues, unread Slack
+  DMs, and tomorrow's calendar. Compose a 4-line "open loops" summary and
+  post it to a Slack DM.
+
+trigger:
+  type: cron
+  schedule: "0 18 * * 1-5"
+
+context:
+  - type: env
+    keys: [SLACK_CHANNEL, LINEAR_TEAM_ID]
+
+steps:
+  - id: fetch_state
+    parallel:
+      - id: linear_open
+        tool: linear.listIssues
+        params:
+          assignedToMe: true
+          states: ["In Progress", "In Review"]
+          teamId: "{{LINEAR_TEAM_ID}}"
+        output: open_issues
+
+      - id: slack_dms
+        tool: slack.listDMs
+        params:
+          limit: 10
+          unreadOnly: true
+        output: dms
+
+      - id: calendar_tomorrow
+        tool: googleCalendar.listEvents
+        params:
+          timeMin: "{{tomorrow_start}}"
+          timeMax: "{{tomorrow_end}}"
+          maxResults: 10
+        output: events
+    risk: low
+
+  - id: compose_shutdown
+    agent:
+      prompt: |
+        Compose a 4-line end-of-day shutdown summary. No greeting. No filler.
+        The user is closing their laptop — this is the "what's still open"
+        check.
+
+        OPEN LINEAR ({{open_issues.length}}):
+        {{open_issues}}
+
+        UNREAD SLACK DMs ({{dms.length}}):
+        {{dms}}
+
+        TOMORROW'S CALENDAR:
+        {{events}}
+
+        Format exactly 4 lines, each starting with a label:
+        - **Open:** count of in-progress issues, name the most senior/blocking one
+        - **DMs:** count + names of senders (or "none" if zero unread)
+        - **Tomorrow:** first meeting time + title (or "no meetings")
+        - **Pick up:** one concrete next action for the morning
+
+        Slack mrkdwn. No emoji.
+    awaits: [fetch_state]
+    output: shutdown_summary
+    risk: low
+
+  - id: post_shutdown
+    tool: slack.postMessage
+    params:
+      channel: "{{SLACK_CHANNEL}}"
+      text: "{{shutdown_summary}}"
+    awaits: [compose_shutdown]
+    risk: low
+
+on_error:
+  notify: false
+  retry: 1

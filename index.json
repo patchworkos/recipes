@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "updated_at": "2026-04-24T00:00:00Z",
+  "updated_at": "2026-04-29T00:00:00Z",
   "recipes": [
     {
       "name": "@patchworkos/morning-brief",
@@ -45,6 +45,33 @@
       "tags": ["sales", "hubspot", "slack", "notion", "crm"],
       "connectors": ["hubspot", "slack", "notion"],
       "install": "github:patchworkos/recipes/recipes/deal-won-celebration",
+      "downloads": 0
+    },
+    {
+      "name": "@patchworkos/end-of-day-shutdown",
+      "version": "1.0.0",
+      "description": "Weekday 6pm shutdown digest: open Linear issues, unread Slack DMs, and tomorrow's calendar — composed into a 4-line Slack message.",
+      "tags": ["productivity", "evening", "daily"],
+      "connectors": ["linear", "slack", "googleCalendar"],
+      "install": "github:patchworkos/recipes/recipes/end-of-day-shutdown",
+      "downloads": 0
+    },
+    {
+      "name": "@patchworkos/standup-digest",
+      "version": "1.0.0",
+      "description": "Weekday 9am standup post: yesterday's closed Linear issues plus today's in-progress work, composed into a 3-line yesterday/today/blockers update for Slack.",
+      "tags": ["engineering", "daily", "standup", "linear", "slack"],
+      "connectors": ["linear", "slack"],
+      "install": "github:patchworkos/recipes/recipes/standup-digest",
+      "downloads": 0
+    },
+    {
+      "name": "@patchworkos/friday-recap",
+      "version": "1.0.0",
+      "description": "Friday 4pm weekly recap: closed Linear issues, calendar load, and active Slack threads — composed into a wins/losses summary posted to Slack and optionally appended to a Notion weekly log.",
+      "tags": ["productivity", "weekly", "review"],
+      "connectors": ["linear", "slack", "googleCalendar", "notion"],
+      "install": "github:patchworkos/recipes/recipes/friday-recap",
       "downloads": 0
     }
   ]

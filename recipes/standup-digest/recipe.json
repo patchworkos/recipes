@@ -1,0 +1,28 @@
+{
+  "name": "@patchworkos/standup-digest",
+  "version": "1.0.0",
+  "description": "Weekday 9am standup post: yesterday's closed Linear issues plus today's in-progress work, composed into a 3-line yesterday/today/blockers update for Slack.",
+  "author": "patchworkos",
+  "license": "MIT",
+  "tags": ["engineering", "daily", "standup", "linear", "slack"],
+  "connectors": ["linear", "slack"],
+  "recipes": {
+    "main": "standup-digest.yaml"
+  },
+  "variables": {
+    "SLACK_STANDUP_CHANNEL": {
+      "description": "Slack channel ID or name to post the standup digest to (e.g. #eng-standup)",
+      "required": true
+    },
+    "LINEAR_TEAM_ID": {
+      "description": "Linear team ID to scope issue queries",
+      "required": true
+    },
+    "STANDUP_LOOKBACK_HOURS": {
+      "description": "How far back to look for closed issues",
+      "required": false,
+      "default": "24"
+    }
+  },
+  "homepage": "https://github.com/patchworkos/recipes/tree/main/recipes/standup-digest"
+}

@@ -17,7 +17,7 @@ description: |
 
 trigger:
   type: cron
-  at: "0 9 * * MON"
+  schedule: "0 9 * * MON"
   vars:
     - name: REPORT_REPO
       default: "Oolab-labs/patchwork-os"

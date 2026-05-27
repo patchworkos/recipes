@@ -1,13 +1,22 @@
 {
   "version": "1",
-  "updated_at": "2026-04-29T00:00:00Z",
+  "updated_at": "2026-05-27T00:00:00Z",
   "recipes": [
     {
       "name": "@patchworkos/morning-brief",
       "version": "1.0.0",
       "description": "Daily 6am digest: Gmail unread, Linear assigned issues, Slack DMs, and today's calendar — composed into one Slack message.",
-      "tags": ["productivity", "morning", "daily"],
-      "connectors": ["gmail", "linear", "slack", "googleCalendar"],
+      "tags": [
+        "productivity",
+        "morning",
+        "daily"
+      ],
+      "connectors": [
+        "gmail",
+        "linear",
+        "slack",
+        "googleCalendar"
+      ],
       "install": "github:patchworkos/recipes/recipes/morning-brief",
       "downloads": 0
     },
@@ -15,8 +24,19 @@
       "name": "@patchworkos/incident-war-room",
       "version": "1.0.0",
       "description": "Ops incident response: summarize alert, open Linear issue, post to #incidents Slack, then append post-incident summary to Notion.",
-      "tags": ["ops", "incident", "on-call", "linear", "slack", "notion"],
-      "connectors": ["linear", "slack", "notion"],
+      "tags": [
+        "ops",
+        "incident",
+        "on-call",
+        "linear",
+        "slack",
+        "notion"
+      ],
+      "connectors": [
+        "linear",
+        "slack",
+        "notion"
+      ],
       "install": "github:patchworkos/recipes/recipes/incident-war-room",
       "downloads": 0
     },
@@ -24,8 +44,16 @@
       "name": "@patchworkos/sprint-review-prep",
       "version": "1.0.0",
       "description": "Pull completed Linear issues for the current sprint, summarize with AI, post digest to #engineering Slack channel.",
-      "tags": ["engineering", "sprint", "linear", "slack"],
-      "connectors": ["linear", "slack"],
+      "tags": [
+        "engineering",
+        "sprint",
+        "linear",
+        "slack"
+      ],
+      "connectors": [
+        "linear",
+        "slack"
+      ],
       "install": "github:patchworkos/recipes/recipes/sprint-review-prep",
       "downloads": 0
     },
@@ -33,8 +61,18 @@
       "name": "@patchworkos/customer-escalation",
       "version": "1.0.0",
       "description": "Zendesk ticket escalation pipeline: fetch ticket, create linked Linear issue, alert #support-escalations on Slack.",
-      "tags": ["support", "escalation", "zendesk", "linear", "slack"],
-      "connectors": ["zendesk", "linear", "slack"],
+      "tags": [
+        "support",
+        "escalation",
+        "zendesk",
+        "linear",
+        "slack"
+      ],
+      "connectors": [
+        "zendesk",
+        "linear",
+        "slack"
+      ],
       "install": "github:patchworkos/recipes/recipes/customer-escalation",
       "downloads": 0
     },
@@ -42,8 +80,18 @@
       "name": "@patchworkos/deal-won-celebration",
       "version": "1.0.0",
       "description": "HubSpot deal closed-won trigger: celebrate in #wins Slack, log deal details to a Notion database.",
-      "tags": ["sales", "hubspot", "slack", "notion", "crm"],
-      "connectors": ["hubspot", "slack", "notion"],
+      "tags": [
+        "sales",
+        "hubspot",
+        "slack",
+        "notion",
+        "crm"
+      ],
+      "connectors": [
+        "hubspot",
+        "slack",
+        "notion"
+      ],
       "install": "github:patchworkos/recipes/recipes/deal-won-celebration",
       "downloads": 0
     },
@@ -51,8 +99,16 @@
       "name": "@patchworkos/end-of-day-shutdown",
       "version": "1.0.0",
       "description": "Weekday 6pm shutdown digest: open Linear issues, unread Slack DMs, and tomorrow's calendar — composed into a 4-line Slack message.",
-      "tags": ["productivity", "evening", "daily"],
-      "connectors": ["linear", "slack", "googleCalendar"],
+      "tags": [
+        "productivity",
+        "evening",
+        "daily"
+      ],
+      "connectors": [
+        "linear",
+        "slack",
+        "googleCalendar"
+      ],
       "install": "github:patchworkos/recipes/recipes/end-of-day-shutdown",
       "downloads": 0
     },
@@ -60,8 +116,17 @@
       "name": "@patchworkos/standup-digest",
       "version": "1.0.0",
       "description": "Weekday 9am standup post: yesterday's closed Linear issues plus today's in-progress work, composed into a 3-line yesterday/today/blockers update for Slack.",
-      "tags": ["engineering", "daily", "standup", "linear", "slack"],
-      "connectors": ["linear", "slack"],
+      "tags": [
+        "engineering",
+        "daily",
+        "standup",
+        "linear",
+        "slack"
+      ],
+      "connectors": [
+        "linear",
+        "slack"
+      ],
       "install": "github:patchworkos/recipes/recipes/standup-digest",
       "downloads": 0
     },
@@ -69,9 +134,35 @@
       "name": "@patchworkos/friday-recap",
       "version": "1.0.0",
       "description": "Friday 4pm weekly recap: closed Linear issues, calendar load, and active Slack threads — composed into a wins/losses summary posted to Slack and optionally appended to a Notion weekly log.",
-      "tags": ["productivity", "weekly", "review"],
-      "connectors": ["linear", "slack", "googleCalendar", "notion"],
+      "tags": [
+        "productivity",
+        "weekly",
+        "review"
+      ],
+      "connectors": [
+        "linear",
+        "slack",
+        "googleCalendar",
+        "notion"
+      ],
       "install": "github:patchworkos/recipes/recipes/friday-recap",
+      "downloads": 0
+    },
+    {
+      "name": "@kungfuk3nnyyy/weekly-commit-report",
+      "version": "1.0.0",
+      "description": "Every Monday: fetch an employee's GitHub commits for the past 7 days and produce a structured contribution report with themes, stats, and highlights. Optionally pushes to phone via ntfy.sh.",
+      "tags": [
+        "github",
+        "reporting",
+        "productivity",
+        "weekly",
+        "commits"
+      ],
+      "connectors": [
+        "github"
+      ],
+      "install": "github:patchworkos/recipes/recipes/weekly-commit-report",
       "downloads": 0
     }
   ]

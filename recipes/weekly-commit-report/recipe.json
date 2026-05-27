@@ -1,0 +1,26 @@
+{
+  "name": "@kungfuk3nnyyy/weekly-commit-report",
+  "version": "1.0.0",
+  "description": "Every Monday: fetch an employee's GitHub commits for the past 7 days and produce a structured contribution report with themes, stats, and highlights. Optionally pushes to phone via ntfy.sh.",
+  "author": "@kungfuk3nnyyy",
+  "license": "MIT",
+  "tags": [
+    "github",
+    "reporting",
+    "productivity",
+    "weekly",
+    "commits"
+  ],
+  "connectors": [
+    "github"
+  ],
+  "recipes": {
+    "main": "recipe.yaml"
+  },
+  "risk_level": "low",
+  "network_access": true,
+  "file_access": true,
+  "approval_behavior": "ask_on_novel",
+  "maintainer": "@kungfuk3nnyyy",
+  "homepage": "https://github.com/Oolab-labs/patchwork-os"
+}
